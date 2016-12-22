@@ -56,14 +56,26 @@ class Generate:
         if self.target[0, 0] == 0:
             self.result = self.OMEGA.dot(self.target)
             self.set_exp_seed_matrix('omega', 1)
-            self.set_exp_seed_matrix('sigma', -1 * self.result[0, 1])
+            if np.array_equal(self.target, np.eye(2)):
+                self.set_exp_seed_matrix('omega', 4)
+            elif np.array_equal(self.target, -1 * np.eye(2)):
+                self.set_exp_seed_matrix('omega', 2)
+            else:
+                self.set_exp_seed_matrix('sigma', -1 * self.result[0, 1])
+            return
             # append Exp val
-
         elif self.target[1, 0] == 0:
             self.result = self.target
-            self.set_exp_seed_matrix('sigma', -1 * self.result[0, 1])
+            if np.array_equal(self.target, np.eye(2)):
+                self.set_exp_seed_matrix('omega', 4)
+            elif np.array_equal(self.target, -1 * np.eye(2)):
+                self.set_exp_seed_matrix('omega', 2)
+            else:
+                self.set_exp_seed_matrix('sigma', -1 * self.result[0, 1])
+            return
         else:
             self.result = self.search_loop()
+            return
 
     # loop algorithm
     def search_loop(self):
@@ -74,29 +86,28 @@ class Generate:
             print(target_calc)
 
         while True:
+            if np.array_equal(la.matrix_power(self.SIGMA, -1 * int(target_calc[0, 1])).dot(la.matrix_power(self.OMEGA, 2)), target_calc):
+                # Show Calc Process
+                if self.isshowprocess:
+                    print(target_calc)
+
+                #print(target_calc)
+                self.set_exp_seed_matrix('sigma', target_calc[0, 1])
+                # -E
+                self.set_exp_seed_matrix('omega', -2)
+                return target_calc
+
+            elif np.array_equal(la.matrix_power(self.SIGMA, int(target_calc[0, 1])), target_calc):
+                self.set_exp_seed_matrix('sigma', -1 * target_calc[0, 1])
+                # Sort reverse
+                self.exp_seed_matrix.reverse()
+                return target_calc
+
             target_calc = self.search_algorithm(target_calc)
 
             # Show Calc Process
             if self.isshowprocess:
                 print(target_calc)
-
-            if np.array_equal(self.SIGMA.dot(la.matrix_power(self.OMEGA, 2)), target_calc):
-                target_calc = la.matrix_power(self.SIGMA, -1).dot(target_calc)
-
-                # Show Calc Process
-                if self.isshowprocess:
-                    print(target_calc)
-
-                self.set_exp_seed_matrix('sigma', -1 * target_calc[0, 1])
-                # -E
-                self.set_exp_seed_matrix('omega', -2)
-                return target_calc
-
-            elif np.array_equal(self.SIGMA, target_calc):
-                self.set_exp_seed_matrix('sigma', target_calc[0, 1])
-                # Sort reverse
-                self.exp_seed_matrix.reverse()
-                return target_calc
 
     # if Part a * Part c != 0
     def search_algorithm(self, target_calc):
