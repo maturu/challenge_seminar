@@ -10,7 +10,11 @@ def main():
     # List Initialization and (Min ~ Max) of Linear Search 
     list_size = 0
     max_matrix = np.eye(2)
-    SEARCH_MAX = 10
+    add_matrix = np.eye(2)
+    # Result List value
+    list_matrix = []
+    # loop value
+    SEARCH_MAX = 2
     SEARCH_MIN = 1
     # Linear Search for 1 ~ 10
     for i in range(SEARCH_MIN, SEARCH_MAX + 1):
@@ -50,12 +54,21 @@ def main():
                         print(gen. get_result())
                         # Judge List largest
                         if len(gen.get_exp_i_seed_matrix()) > list_size:
+                            list_matrix = []
                             list_size = len(gen.get_exp_i_seed_matrix())
                             list_data = gen.get_exp_i_seed_matrix()[:]
                             max_matrix[0,0] = target[0,0]
                             max_matrix[0,1] = target[0,1]
                             max_matrix[1,0] = target[1,0]
                             max_matrix[1,1] = target[1,1]
+                            list_matrix.append(max_matrix)
+                        elif len(gen.get_exp_i_seed_matrix()) == list_size:
+                            list_size = len(gen.get_exp_i_seed_matrix())
+                            add_matrix[0,0] = target[0,0]
+                            add_matrix[0,1] = target[0,1]
+                            add_matrix[1,0] = target[1,0]
+                            add_matrix[1,1] = target[1,1]
+                            list_matrix.append(add_matrix)
                     #Garbage Collection
                     gen = None
         # Judge loop final
@@ -63,7 +76,10 @@ def main():
             print("----------------------")
             print("")
             print("Max Result :")
-            print(max_matrix)
+            # Result print loop
+            for i in range(0, len(list_matrix)):
+                print(list_matrix[i])
+                print("----------------------")
             for matrix in list_data:
                 if matrix['type'] == 'omega':
                     sys.stdout.write('ω ^ ' + str(matrix['exp']))
