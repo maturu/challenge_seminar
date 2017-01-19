@@ -13,9 +13,10 @@ def main():
     add_matrix = np.eye(2)
     # Result List value
     list_matrix = []
+    list_data = []
     # loop value
-    SEARCH_MAX = 2
-    SEARCH_MIN = 1
+    SEARCH_MAX = 10
+    SEARCH_MIN = -10
     # Linear Search for 1 ~ 10
     for i in range(SEARCH_MIN, SEARCH_MAX + 1):
         for j in range(SEARCH_MIN, SEARCH_MAX + 1):
@@ -55,8 +56,10 @@ def main():
                         # Judge List largest
                         if len(gen.get_exp_i_seed_matrix()) > list_size:
                             list_matrix = []
+                            list_data = []
                             list_size = len(gen.get_exp_i_seed_matrix())
-                            list_data = gen.get_exp_i_seed_matrix()[:]
+                            data = gen.get_exp_i_seed_matrix()[:]
+                            list_data.append(data)
                             max_matrix[0,0] = target[0,0]
                             max_matrix[0,1] = target[0,1]
                             max_matrix[1,0] = target[1,0]
@@ -64,6 +67,8 @@ def main():
                             list_matrix.append(max_matrix)
                         elif len(gen.get_exp_i_seed_matrix()) == list_size:
                             list_size = len(gen.get_exp_i_seed_matrix())
+                            data = gen.get_exp_i_seed_matrix()[:]
+                            list_data.append(data)
                             add_matrix[0,0] = target[0,0]
                             add_matrix[0,1] = target[0,1]
                             add_matrix[1,0] = target[1,0]
@@ -79,14 +84,15 @@ def main():
             # Result print loop
             for i in range(0, len(list_matrix)):
                 print(list_matrix[i])
+                sys.stdout.write("=")
+                for matrix in list_data[i]:
+                    if matrix['type'] == 'omega':
+                        sys.stdout.write('ω ^ ' + str(matrix['exp']))
+                    elif matrix['type'] == 'sigma':
+                        sys.stdout.write('σ ^ ' + str(matrix['exp']))
+                    sys.stdout.write(' ')
+                print("")
                 print("----------------------")
-            for matrix in list_data:
-                if matrix['type'] == 'omega':
-                    sys.stdout.write('ω ^ ' + str(matrix['exp']))
-                elif matrix['type'] == 'sigma':
-                    sys.stdout.write('σ ^ ' + str(matrix['exp']))
-                sys.stdout.write(' ')
-            print("")
 
 if __name__ == '__main__':
     main()
